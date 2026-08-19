@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ── 이 저장소는 공개(public) 입니다 ─────────────────────────────
+# 사업 기획서와 미공개 시안 원본은 올리지 않습니다.
+# (사이트 동작에 필요한 사진은 public/ 아래에 따로 들어 있습니다)
+/기획서.md
+/solion-lunion-site/
+/brand.png
+/main.png
+/main_high.png
+/solion.png
+/lunion.png
+/sample.png
