@@ -54,3 +54,6 @@ next-env.d.ts
 
 # 정적 빌드 결과물 (GitHub Actions 가 자동으로 만듭니다)
 /out/
+
+# 작업 로그 (사업 결정 포함 · 공개 저장소에 올리지 않음)
+/log.md
