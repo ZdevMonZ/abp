@@ -93,7 +93,7 @@ export const duoContent = {
       sub: "SOLION Cosmic Screen",
       headline: "낮 — 우주급 자외선 차단",
       lead: "자외선과 외부 자극에 그대로 노출되는 낮. NASA 클린룸에서 발견된 균주와 무기 자외선 필터를 함께 담아 피부를 지킵니다.",
-      visualSrc: "/solion.png",
+      visualSrc: "/solion.webp",
       visualAlt: "SOLION Cosmic Screen 선크림 라인업",
       features: [
         { icon: "biome" as IconName, lead: "NASA 클린룸에서 발견된", strong: "Bacillus Lysate" },
@@ -112,7 +112,7 @@ export const duoContent = {
       sub: "재생크림 · 에센스",
       headline: "밤 — 시술 후 재생과 진정",
       lead: "시술 직후의 예민한 피부가 쉬는 밤. PDRN·엑토인·비피다 발효물이 무너진 장벽을 다시 세웁니다.",
-      visualSrc: "/lunion.png",
+      visualSrc: "/lunion.webp",
       visualAlt: "LUNION 재생크림 · 에센스 라인업",
       features: [
         { icon: "dna" as IconName, lead: "PDRN + 엑토인 + 비피다발효용해물", strong: "장벽 회복 · 수분 공급" },

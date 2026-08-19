@@ -7,7 +7,8 @@ import { ScrollCue } from "@/components/ScrollCue";
 /**
  * 1번 섹션 — 메인 비주얼
  * ---------------------------------------------------------------------------
- * 배경은 시안 이미지 `public/main_high.png` (1717×916) 입니다.
+ * 배경은 시안 이미지 `public/main_high.webp` (1717×916) 입니다.
+ * (원본 PNG 를 WebP 로 바꿔 1.9MB → 0.17MB 로 줄인 파일입니다)
  *
  * ★ PC 에서 화면을 세로로 꽉 채우지 않는 이유 (선명도)
  * 사진은 원본보다 크게 늘리면 흐려집니다. 이 사진으로 큰 화면의 높이까지 채우려면
@@ -35,7 +36,7 @@ import { ScrollCue } from "@/components/ScrollCue";
  */
 
 /** 배경 사진 — 파일을 바꾸면 가로·세로도 실제 크기로 고쳐 주세요 */
-const IMAGE = { src: "/main_high.png", width: 1717, height: 916 };
+const IMAGE = { src: "/main_high.webp", width: 1717, height: 916 };
 
 /** 사진 위쪽에서 잘라낼 비율 — 시안에 그려진 가짜 메뉴줄을 가리는 최소값입니다 */
 const CROP_TOP = 0.16;

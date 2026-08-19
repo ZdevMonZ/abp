@@ -2,7 +2,7 @@
 
 `https://mall.beautydaum.com/main/index.php` 의 **레이아웃·섹션 구성·스크롤 방식**을 Next.js로 다시 만든 토대입니다.
 **문구는 `기획서.md` (SOLION & LUNION Two-Track 사업 기획서, 2026.07) 기준으로 채워져 있습니다.**
-**메인 비주얼은 시안 이미지(`public/main_high.png`)를 씁니다. 아이콘은 `sample.png` 시안의 선(line) 아이콘으로 그려 넣었고,
+**메인 비주얼은 시안 이미지(`public/main_high.webp`)를 씁니다. 아이콘은 `sample.png` 시안의 선(line) 아이콘으로 그려 넣었고,
 남은 이미지·로고는 아직 자리표시자(placeholder)** 입니다.
 원본 사이트의 이미지·로고·상호는 타사 저작물이라 가져오지 않았습니다.
 
@@ -17,11 +17,64 @@
 
 ```bash
 npm run dev      # 개발 서버 → http://localhost:3000
-npm run build    # 배포용 빌드
+npm run build    # 배포용 빌드 → out/ 폴더에 완성된 사이트가 만들어집니다
+npm run preview  # 만들어진 out/ 을 그대로 열어 보기 → http://localhost:3001
 npm run lint     # 코드 검사
 ```
 
 > 브라우저에서 파일을 직접 열면 안 됩니다. 반드시 `npm run dev` 를 실행한 뒤 표시되는 주소로 접속하세요.
+
+> **`npm start` 는 없습니다.** 이 사이트는 서버 없이 도는 **정적 사이트**(`output: "export"`)로
+> 만들어지기 때문입니다. 빌드 결과를 확인하려면 `npm run preview` 를 쓰세요.
+
+---
+
+## 웹사이트 공개하기 (GitHub Pages)
+
+GitHub 에 올린 코드를 **무료로 웹사이트처럼 띄워 주는 기능**이 GitHub Pages 입니다.
+설정은 이미 다 해 두었고, **딱 한 번 눌러야 하는 버튼**만 남아 있습니다.
+
+### 1) 최초 1회 — GitHub 화면에서 켜기
+
+1. 브라우저에서 저장소(`github.com/ZdevMonZ/abp`)를 엽니다
+2. 위쪽 **Settings** (톱니바퀴) 탭
+3. 왼쪽 목록에서 **Pages**
+4. **Build and deployment → Source** 를 **`GitHub Actions`** 로 바꿉니다
+   (기본값인 `Deploy from a branch` 로 두면 안 됩니다)
+
+끝입니다. 저장 버튼도 따로 없습니다.
+
+### 2) 그 다음부터 — 그냥 push 하면 자동입니다
+
+`main` 브랜치에 push 할 때마다 GitHub 가 알아서 빌드하고 새로 올립니다 (2~3분).
+진행 상황은 저장소 위쪽 **Actions** 탭에서 볼 수 있습니다.
+초록색 체크(✔)가 뜨면 반영된 것입니다.
+
+주소:
+
+```
+https://ZdevMonZ.github.io/abp/
+```
+
+### 검색에는 안 뜨게 해 두었습니다
+
+`src/app/layout.tsx` 의 `robots: { index: false, follow: false }` 가
+구글·네이버에 **"이 페이지는 검색 결과에 넣지 마세요"** 라고 알려 줍니다.
+
+> **주의** — 비밀번호가 아닙니다. 주소를 아는 사람은 누구나 볼 수 있고,
+> 저장소가 공개(public)라서 코드도 누구나 볼 수 있습니다.
+> 정식 오픈해서 검색에 뜨게 하려면 그 `robots:` 줄을 지우면 됩니다.
+
+### 설정 파일 3개 (건드릴 일은 거의 없습니다)
+
+| 파일 | 역할 |
+|---|---|
+| `.github/workflows/deploy.yml` | push 되면 빌드해서 Pages 에 올리는 자동화 |
+| `next.config.ts` | `output: "export"` (서버 없는 정적 사이트) + 주소 앞에 `/abp` 붙이기 |
+| `src/image-loader.ts` | 사진 주소 앞에도 `/abp` 를 붙여 줍니다 (이게 없으면 사진만 안 나옵니다) |
+
+> **저장소 이름을 바꾸면** `deploy.yml` 의 `NEXT_PUBLIC_BASE_PATH: /abp` 를 새 이름으로 고쳐야 합니다.
+> 내 컴퓨터(`npm run dev`)에서는 이 값이 비어 있어서 `/abp` 가 붙지 않습니다.
 
 ---
 
@@ -61,6 +114,7 @@ src/
 │  ├─ brand.ts        ★ 브랜드명·연락처·구매 링크·푸터
 │  ├─ content.ts      ★ 상단 메뉴 + 섹션별 문구
 │  └─ locale-store.ts   선택된 언어를 담아 두는 작은 저장소 (상단·푸터 동기)
+├─ image-loader.ts     사진 주소 앞에 /abp 붙이기 (GitHub Pages 용 · 건드릴 일 없음)
 └─ components/
    ├─ FullPage.tsx      풀페이지 스크롤 + 점 네비게이션 + 플로팅 버튼
    ├─ TopNav.tsx        상단 메뉴바 (항목은 content.ts 의 navItems)
@@ -85,9 +139,9 @@ src/
 
 | # | id | 원본 | 이 프로젝트 |
 |---|---|---|---|
-| 1 | `hero` | 풀스크린 메인 비주얼 | `HeroSection` — 배경 `public/main_high.png` |
+| 1 | `hero` | 풀스크린 메인 비주얼 | `HeroSection` — 배경 `public/main_high.webp` |
 | 2 | `about` | ABOUT US · 강점 카드 4개 | `AboutSection` |
-| 3 | `duo` | MALL / HUB (반복 섹션) | `DuoSection` — **SOLION(낮·밝은 쪽) ↔ LUNION(밤·어두운 쪽) 좌우 대비 1개 섹션**. 사진 `public/solion.png`·`public/lunion.png` |
+| 3 | `duo` | MALL / HUB (반복 섹션) | `DuoSection` — **SOLION(낮·밝은 쪽) ↔ LUNION(밤·어두운 쪽) 좌우 대비 1개 섹션**. 사진 `public/solion.webp`·`public/lunion.webp` |
 | 4 | `cycle` | — | `CycleSection` — 24H SKIN CYCLE 원형 다이어그램 (새로 추가) |
 | 5 | `science` | FACULTY | `ServiceSection` — 배너는 아직 자리표시자 |
 | 6 | `stats` | 숫자 카운터 4개 | `StatsSection` |
@@ -124,7 +178,7 @@ src/
 
 ---
 
-## 메인 비주얼 (`public/main_high.png` · 1717×916)
+## 메인 비주얼 (`public/main_high.webp` · 1717×916)
 
 시안 이미지에는 메뉴줄·SOLION/LUNION 문구·DAY/NIGHT·SCROLL 이 **이미 그려져 있습니다.**
 `HeroSection.tsx` 위쪽 상수 몇 개로 처리합니다.
@@ -170,7 +224,7 @@ src/
 > **왜 아래는 자르지 않나** — 이 사진은 가로로 길어서(1717×916) 위아래를 자를수록 좌우도
 > 크게 잘려 나갑니다. 아래까지 자르면 양옆 SOLION / LUNION 글자가 잘려서, 대신 그늘로 처리했습니다.
 
-> 사진을 바꾸려면 `public/` 에 넣고 `<Image src="/main_high.png">` 파일명을 교체하세요.
+> 사진을 바꾸려면 `public/` 에 넣고 `<Image src="/main_high.webp">` 파일명을 교체하세요.
 > **비율이 다른 사진으로 바꾸면 `CROP_TOP` 을 다시 맞춰야 합니다.**
 > 글자가 없는 사진이라면 `CROP_TOP` 을 `0%` 로 두고 `SHOW_TEXT_OVER_IMAGE` 를 `true` 로 켜는 편이 좋습니다.
 
@@ -180,12 +234,22 @@ src/
 
 사진이 들어가는 곳은 두 종류이고, **넣는 방식이 다릅니다.**
 
+> **파일 형식은 `.webp` 를 쓰세요.** PNG 와 눈으로 구별이 거의 안 되는데 용량은 10분의 1입니다.
+> (지금 쓰는 사진 3장: PNG 5.9MB → WebP 0.45MB. 휴대폰에서 첫 화면 뜨는 속도가 달라집니다.)
+> PNG/JPG 를 가지고 있다면 터미널에서 아래 한 줄로 바꿀 수 있습니다.
+>
+> ```bash
+> node -e "require('sharp')('사진.png').webp({quality:90}).toFile('public/사진.webp')"
+> ```
+>
+> `sharp` 는 Next.js 에 이미 딸려 있어서 따로 설치할 필요가 없습니다.
+
 ### 1) SOLION / LUNION 좌우 대비 섹션 — 자르지 않고 통째로
 
 `src/brand/content.ts` 의 `duoContent.panels` 에서 한 줄만 고치면 됩니다.
 
 ```ts
-visualSrc: "/solion.png",              // public/ 아래 파일 경로
+visualSrc: "/solion.webp",              // public/ 아래 파일 경로
 visualAlt: "SOLION ... 라인업",        // 사진 설명 (화면에는 안 보이고 읽어 주는 글)
 ```
 
@@ -201,7 +265,7 @@ visualAlt: "SOLION ... 라인업",        // 사진 설명 (화면에는 안 보
 `public/` 에 파일을 넣고 `src/brand/content.ts` 의 해당 섹션에 두 줄을 추가합니다.
 
 ```ts
-visualSrc: "/science.png",  // 사진 경로 (없으면 자리표시자가 나옵니다)
+visualSrc: "/science.webp",  // 사진 경로 (없으면 자리표시자가 나옵니다)
 visualFocus: "62%",         // PC 배너에서 사진의 어느 높이를 보여줄지
 ```
 
@@ -260,7 +324,7 @@ visualFocus: "62%",         // PC 배너에서 사진의 어느 높이를 보여
 | 첫 화면 | 로그인 폼 + 배너 슬라이더 + 진입 카드 | 삭제 — 메인 비주얼로 바로 시작 | 회원제 쇼핑몰이 아닌 브랜드 소개 사이트 |
 | 상단 메뉴 | 없음 (로그인 화면이 입구 역할) | `brand.png` 시안 구성 — 워드마크 / BRAND·SOLION·LUNION·SCIENCE·JOURNAL / 계정·구매·언어 | 로그인 화면을 없앤 대신 어디서든 이동할 수 있는 길 |
 | 팔레트 | 민트·청록 (#1fa0b0) | 라벤더·퍼플 (#6b6bd6) | `brand.png` 시안 톤 |
-| 메인 비주얼 | 배너 슬라이더 | 시안 이미지 1장 (`main_high.png`) 전체 화면 | 시안이 이미 완성된 한 장 구성 |
+| 메인 비주얼 | 배너 슬라이더 | 시안 이미지 1장 (`main_high.webp`) 전체 화면 | 시안이 이미 완성된 한 장 구성 |
 | 푸터 드롭다운 | 관련 사이트 링크 | 언어 선택 (한국어/English) | 표시만 동작 — 실제 번역(i18n)은 미연결 |
 | 픽토그램 | 회색 아이콘 이미지 | 선으로 그린 SVG 아이콘 (`Icon.tsx`) | `sample.png` 시안 결. 이미지 파일이 없어도 되고 색·크기가 자유로움 |
 | 특징 3개 줄 | 좌우 여백만 | PC 에서 얇은 세로줄로 칸 구분 | `sample.png` 의 SCIENCE 줄 구성 |

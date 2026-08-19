@@ -6,7 +6,7 @@ import { Placeholder, type Tone } from "@/components/Placeholder";
  * ---------------------------------------------------------------------------
  * `src` 가 있으면 실제 사진을, 없으면 자리표시자를 그립니다.
  * 사진을 넣으려면 `public/` 에 파일을 두고
- * src/brand/content.ts 의 해당 섹션에 `visualSrc: "/파일명.png"` 한 줄만 추가하세요.
+ * src/brand/content.ts 의 해당 섹션에 `visualSrc: "/파일명.webp"` 한 줄만 추가하세요.
  *
  * 가로로 긴 PC 배너와 세로로 넉넉한 모바일 배너의 비율이 달라서
  * 같은 사진이라도 보이는 범위가 다릅니다 (`objectPosition` 으로 조절).
