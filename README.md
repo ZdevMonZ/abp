@@ -19,6 +19,7 @@
 npm run dev      # 개발 서버 → http://localhost:3000
 npm run build    # 배포용 빌드 → out/ 폴더에 완성된 사이트가 만들어집니다
 npm run preview  # 만들어진 out/ 을 그대로 열어 보기 → http://localhost:3001
+npm run deploy   # 사이트를 실제로 공개 (아래 '웹사이트 공개하기' 참고)
 npm run lint     # 코드 검사
 ```
 
@@ -31,30 +32,39 @@ npm run lint     # 코드 검사
 
 ## 웹사이트 공개하기 (GitHub Pages)
 
-GitHub 에 올린 코드를 **무료로 웹사이트처럼 띄워 주는 기능**이 GitHub Pages 입니다.
-설정은 이미 다 해 두었고, **딱 한 번 눌러야 하는 버튼**만 남아 있습니다.
-
-### 1) 최초 1회 — GitHub 화면에서 켜기
-
-1. 브라우저에서 저장소(`github.com/ZdevMonZ/abp`)를 엽니다
-2. 위쪽 **Settings** (톱니바퀴) 탭
-3. 왼쪽 목록에서 **Pages**
-4. **Build and deployment → Source** 를 **`GitHub Actions`** 로 바꿉니다
-   (기본값인 `Deploy from a branch` 로 두면 안 됩니다)
-
-끝입니다. 저장 버튼도 따로 없습니다.
-
-### 2) 그 다음부터 — 그냥 push 하면 자동입니다
-
-`main` 브랜치에 push 할 때마다 GitHub 가 알아서 빌드하고 새로 올립니다 (2~3분).
-진행 상황은 저장소 위쪽 **Actions** 탭에서 볼 수 있습니다.
-초록색 체크(✔)가 뜨면 반영된 것입니다.
+GitHub 에 올린 파일을 **무료로 웹사이트처럼 띄워 주는 기능**이 GitHub Pages 입니다.
 
 주소:
 
 ```
 https://ZdevMonZ.github.io/abp/
 ```
+
+### 1) 최초 1회 — GitHub 화면에서 켜기
+
+1. 브라우저에서 저장소(`github.com/ZdevMonZ/abp`)를 엽니다
+2. 위쪽 **Settings** (톱니바퀴) 탭
+3. 왼쪽 목록에서 **Pages**
+4. **Build and deployment → Source** 를 **`Deploy from a branch`** 로 둔 채,
+   바로 아래 **Branch** 를 **`gh-pages`** / **`/ (root)`** 로 고르고 **Save**
+
+끝입니다. 2~3분 뒤 위 주소가 열립니다.
+
+### 2) 내용을 고친 다음 — 명령 한 줄
+
+```bash
+npm run deploy
+```
+
+이 한 줄이 **빌드 → `gh-pages` 브랜치에 통째로 올리기** 까지 다 합니다 (`scripts/deploy.sh`).
+2~3분 뒤 사이트에 반영됩니다.
+
+> **브랜치가 두 개인 이유**
+> `main` = 우리가 고치는 **코드**, `gh-pages` = 그 코드로 **만들어진 결과물**.
+> `gh-pages` 는 매번 통째로 덮어쓰므로 여기에 직접 뭔가 고치면 다음 배포 때 사라집니다.
+
+> `git push` 는 코드를 백업하는 것일 뿐 **사이트에는 반영되지 않습니다.**
+> 사이트에 올리려면 `npm run deploy` 를 따로 실행해야 합니다.
 
 ### 검색에는 안 뜨게 해 두었습니다
 
@@ -65,16 +75,29 @@ https://ZdevMonZ.github.io/abp/
 > 저장소가 공개(public)라서 코드도 누구나 볼 수 있습니다.
 > 정식 오픈해서 검색에 뜨게 하려면 그 `robots:` 줄을 지우면 됩니다.
 
-### 설정 파일 3개 (건드릴 일은 거의 없습니다)
+### 관련 파일
 
 | 파일 | 역할 |
 |---|---|
-| `.github/workflows/deploy.yml` | push 되면 빌드해서 Pages 에 올리는 자동화 |
+| `scripts/deploy.sh` | `npm run deploy` 가 실행하는 배포 스크립트 |
 | `next.config.ts` | `output: "export"` (서버 없는 정적 사이트) + 주소 앞에 `/abp` 붙이기 |
 | `src/image-loader.ts` | 사진 주소 앞에도 `/abp` 를 붙여 줍니다 (이게 없으면 사진만 안 나옵니다) |
+| `scripts/github-pages-workflow.yml` | **보관용** — 완전 자동 배포로 바꾸고 싶을 때 쓰는 파일 (아래 참고) |
 
-> **저장소 이름을 바꾸면** `deploy.yml` 의 `NEXT_PUBLIC_BASE_PATH: /abp` 를 새 이름으로 고쳐야 합니다.
+> **저장소 이름을 바꾸면** `scripts/deploy.sh` 의 `BASE_PATH="/abp"` 를 새 이름으로 고쳐야 합니다.
 > 내 컴퓨터(`npm run dev`)에서는 이 값이 비어 있어서 `/abp` 가 붙지 않습니다.
+
+### (선택) push 만 하면 자동으로 배포되게 하기
+
+지금은 `npm run deploy` 를 직접 실행해야 합니다. GitHub 이 알아서 해 주게 하려면:
+
+1. `github.com/settings/tokens` 에서 쓰던 토큰에 **`workflow`** 권한을 체크하고 저장
+2. `scripts/github-pages-workflow.yml` 을 `.github/workflows/deploy.yml` 로 옮긴 뒤 커밋·푸시
+3. 저장소 **Settings → Pages → Source** 를 **`GitHub Actions`** 로 변경
+
+> 이 권한이 없으면 GitHub 이 그 파일의 푸시를 거부합니다.
+> (`refusing to allow a Personal Access Token to create or update workflow`)
+> 그래서 지금은 자동화 대신 `npm run deploy` 방식을 씁니다.
 
 ---
 
@@ -128,6 +151,11 @@ src/
    └─ sections/          섹션 컴포넌트
       ├─ DuoSection.tsx    ★ SOLION ↔ LUNION 좌우 대비
       └─ CycleSection.tsx    24H SKIN CYCLE 원형 다이어그램
+
+public/               사진 파일 (주소는 /main_high.webp 처럼 public 을 뺀 경로)
+scripts/
+├─ deploy.sh            npm run deploy 가 실행하는 배포 스크립트
+└─ github-pages-workflow.yml  보관용 — 완전 자동 배포로 바꿀 때 쓰는 파일
 ```
 
 ---

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "preview": "python3 -m http.server 3001 --directory out",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "next": "16.3.1",
