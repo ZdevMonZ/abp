@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { brand } from "@/brand/brand";
+import { uiText } from "@/brand/content";
+import { useLocaleSetup, useText } from "@/brand/locale-store";
 import { TopNav } from "@/components/TopNav";
 
 export type SectionDef = {
@@ -39,6 +41,11 @@ export function FullPage({
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const t = useText();
+
+  // 지난 방문에서 고른 언어 되살리기 + <html lang> · 탭 제목 맞추기
+  // (화면에 항상 떠 있는 컴포넌트라 여기서 한 번만 호출합니다)
+  useLocaleSetup();
 
   // 현재 보이는 섹션 추적 + 등장 애니메이션
   useEffect(() => {
@@ -163,7 +170,7 @@ export function FullPage({
 
       {/* 오른쪽 점 네비게이션 (원본 #fv-dots) */}
       <nav
-        aria-label="섹션 바로가기"
+        aria-label={t(uiText.sectionNav)}
         className="fixed top-1/2 right-4 z-40 hidden -translate-y-1/2 md:block lg:right-10"
       >
         <ul className="flex flex-col items-center gap-1">
@@ -207,7 +214,7 @@ export function FullPage({
           href={brand.contact.messenger.href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="카카오톡 채널로 문의하기"
+          aria-label={t(uiText.askOnKakao)}
           className="shadow-card flex h-11 w-11 items-center justify-center rounded-full bg-[#f4d94e] text-ink transition hover:brightness-105 md:h-14 md:w-14"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-6 w-6">
@@ -217,7 +224,7 @@ export function FullPage({
         <button
           type="button"
           onClick={() => goTo(0)}
-          aria-label="맨 위로"
+          aria-label={t(uiText.backToTop)}
           className={`shadow-card flex h-11 w-11 items-center justify-center rounded-full bg-brand-400 text-white transition hover:bg-brand-500 md:h-14 md:w-14 ${
             active === 0 ? "pointer-events-none opacity-0" : "opacity-100"
           }`}

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { brand } from "@/brand/brand";
-import { navItems } from "@/brand/content";
+import { navItems, uiText } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
 /**
@@ -32,6 +33,7 @@ export function TopNav({
 }) {
   const onDark = variant === "light";
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useText();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -65,7 +67,7 @@ export function TopNav({
         <button
           type="button"
           onClick={() => handleJump("hero")}
-          aria-label={`${brand.wordmark} 홈으로`}
+          aria-label={`${brand.wordmark} ${t(uiText.home)}`}
           className={`font-display shrink-0 text-[15px] font-semibold tracking-[0.18em] transition md:text-[19px] ${
             onDark ? "text-white hover:text-white/80" : "text-ink hover:text-brand-700"
           }`}
@@ -74,7 +76,7 @@ export function TopNav({
         </button>
 
         {/* ── 가운데: 메뉴 (넓은 화면) ────────────────────── */}
-        <nav aria-label="주요 메뉴" className="hidden flex-1 justify-center lg:flex">
+        <nav aria-label={t(uiText.mainMenu)} className="hidden flex-1 justify-center lg:flex">
           <ul className="flex items-center gap-7 xl:gap-10">
             {navItems.map((item) => {
               const active = !!item.match && !!activeId && item.match.includes(activeId);
@@ -84,7 +86,7 @@ export function TopNav({
                   <li key={item.label}>
                     <span
                       aria-disabled="true"
-                      title="준비 중"
+                      title={t(uiText.comingSoon)}
                       className={`cursor-default text-[14px] tracking-[0.16em] ${
                         onDark ? "text-white/35" : "text-ink-faint"
                       }`}
@@ -126,7 +128,7 @@ export function TopNav({
           {/* 계정 — 로그인 기능이 없어 준비 중 표시입니다 */}
           <span
             aria-disabled="true"
-            title="계정 (준비 중)"
+            title={t(uiText.account)}
             className={`hidden cursor-default md:block ${
               onDark ? "text-white/35" : "text-ink-faint"
             }`}
@@ -142,7 +144,7 @@ export function TopNav({
             href={brand.purchase.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`제품 구매하기 (${brand.purchase.label})`}
+            aria-label={`${t(uiText.shop)} (${t(brand.purchase.label)})`}
             className={`transition ${iconTone}`}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="h-[22px] w-[22px]">
@@ -159,7 +161,7 @@ export function TopNav({
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-controls="top-nav-mobile"
-            aria-label={menuOpen ? "메뉴 닫기" : "메뉴 열기"}
+            aria-label={menuOpen ? t(uiText.closeMenu) : t(uiText.openMenu)}
             className={`transition lg:hidden ${iconTone}`}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" className="h-6 w-6">
@@ -179,13 +181,13 @@ export function TopNav({
         {/* 메뉴 바깥을 누르면 닫히도록 깔아 두는 투명한 막 */}
         <button
           type="button"
-          aria-label="메뉴 닫기"
+          aria-label={t(uiText.closeMenu)}
           onClick={() => setMenuOpen(false)}
           className="fixed inset-0 -z-10 cursor-default lg:hidden"
         />
         <nav
           id="top-nav-mobile"
-          aria-label="주요 메뉴"
+          aria-label={t(uiText.mainMenu)}
           className="shadow-float border-t border-line bg-white/95 backdrop-blur-md lg:hidden"
         >
           <ul className="mx-auto max-w-shell px-5 py-2 md:px-10">
@@ -197,7 +199,7 @@ export function TopNav({
                     className="block py-3.5 text-[15px] tracking-[0.16em] text-ink-faint"
                   >
                     {item.label}
-                    <span className="ml-2 text-[12px] tracking-normal">준비 중</span>
+                    <span className="ml-2 text-[12px] tracking-normal">{t(uiText.comingSoon)}</span>
                   </span>
                 </li>
               ) : (

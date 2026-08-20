@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { brand } from "@/brand/brand";
 import { heroContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { LogoMark } from "@/components/Placeholder";
 import { ScrollCue } from "@/components/ScrollCue";
 
@@ -20,10 +23,13 @@ import { ScrollCue } from "@/components/ScrollCue";
  * (완전히 안 늘리려면 사진을 화면 폭의 80% 이하로 줄여야 해서 첫 화면이 액자처럼
  *  작아집니다. 더 선명하게 하려면 더 큰 원본 파일이 필요합니다.)
  *
- * 단, 이 배치는 **화면이 가로로 넓을 때만**(5:3 보다 넓을 때) 씁니다.
- * 휴대폰·태블릿·16:10 노트북처럼 정사각형에 가까운 화면에서는 아래 여백이
- * 화면의 3할 넘게 비어 허전해지므로 예전처럼 꽉 채웁니다.
- * 그런 화면은 사진이 오히려 축소되거나 조금만 늘어나서 선명도 문제도 적습니다.
+ * 이 배치의 더 중요한 이유는 **좌우가 잘리지 않는다**는 것입니다.
+ * 시안 양쪽 끝에 SOLION(왼쪽) · LUNION(오른쪽) 글자가 있어서, 화면을 꽉 채우려고
+ * 사진을 키우면 그 글자들이 먼저 잘려 나갑니다. (16:10 노트북에서 좌우 26%)
+ *
+ * 그래서 **가로로 놓인 화면(4:3 = 1.33 보다 넓을 때)은 전부** 이 띠 배치를 씁니다.
+ * 휴대폰·태블릿 세로처럼 세로로 긴 화면만 꽉 채웁니다 — 그런 화면에서 띠로 두면
+ * 사진이 화면 높이의 2~3할밖에 안 되는 얇은 줄이 되기 때문입니다.
  * 기준선은 src/app/globals.css 의 `.hero-band` / `.hero-fill` 에 있습니다.
  *
  * 이 사진에는 SOLION / LUNION / PROTECT·RECOVER / SCROLL 문구와 **가짜 메뉴줄**이
@@ -35,8 +41,20 @@ import { ScrollCue } from "@/components/ScrollCue";
  * 다른 사진으로 바꾸려면 아래 IMAGE 값(파일명·가로·세로)만 고치면 됩니다.
  */
 
-/** 배경 사진 — 파일을 바꾸면 가로·세로도 실제 크기로 고쳐 주세요 */
-const IMAGE = { src: "/main_high.webp", width: 1717, height: 916 };
+/**
+ * 배경 사진 — 파일을 바꾸면 가로·세로도 실제 크기로 고쳐 주세요
+ *
+ * 시안 안에 글자가 그려져 있어 **언어별로 다른 파일**을 씁니다.
+ * `{ ko: ..., en: ... }` 은 다른 곳에서 쓰는 `t("한국어","English")` 와 같은 뜻입니다.
+ * (이 파일에서는 `t` 라는 이름을 화면에 글자를 그릴 때 쓰고 있어 풀어 적었습니다)
+ *
+ * 두 파일 모두 1717×916 · 같은 구성이라 아래 가로·세로와 CROP_TOP 을 함께 씁니다.
+ */
+const IMAGE = {
+  src: { ko: "/main_high.webp", en: "/main_high_eng.webp" },
+  width: 1717,
+  height: 916,
+};
 
 /** 사진 위쪽에서 잘라낼 비율 — 시안에 그려진 가짜 메뉴줄을 가리는 최소값입니다 */
 const CROP_TOP = 0.16;
@@ -57,6 +75,8 @@ const FADE_TO_BACKDROP = `linear-gradient(to top, ${BACKDROP} 0%, ${BACKDROP}f0 
 const SHOW_TEXT_OVER_IMAGE = false;
 
 export function HeroSection() {
+  const t = useText();
+
   return (
     <div
       className="relative flex min-h-dvh w-full flex-col overflow-hidden"
@@ -69,7 +89,7 @@ export function HeroSection() {
         style={{ top: `-${CROP_TOP * 100}%` }}
       >
         <Image
-          src={IMAGE.src}
+          src={t(IMAGE.src)}
           alt=""
           fill
           priority
@@ -87,7 +107,7 @@ export function HeroSection() {
       {/* ── 사진 띠 배치 (가로로 넓은 화면) ─────────────────── */}
       <div className="hero-band relative w-full shrink-0" style={{ aspectRatio: BAND_RATIO }}>
         <Image
-          src={IMAGE.src}
+          src={t(IMAGE.src)}
           alt=""
           fill
           priority
@@ -138,12 +158,12 @@ export function HeroSection() {
         >
           <LogoMark wordmark={brand.wordmark} variant="light" className="text-2xl md:text-4xl" />
           <h1 className="keep-all mt-4 text-[25px] leading-tight font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:text-[70px]">
-            {heroContent.headline}
+            {t(heroContent.headline)}
           </h1>
           <p className="mt-2.5 text-[16px] leading-[1.5] font-normal text-white/80 drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] md:mt-7 md:text-[20px]">
-            {heroContent.sub.map((line) => (
-              <span key={line} className="block md:inline">
-                {line}{" "}
+            {heroContent.sub.map((line, i) => (
+              <span key={i} className="block md:inline">
+                {t(line)}{" "}
               </span>
             ))}
           </p>

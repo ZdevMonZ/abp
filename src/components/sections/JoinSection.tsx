@@ -1,5 +1,8 @@
+"use client";
+
 import { Fragment } from "react";
 import { joinContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 import { SectionHeading } from "@/components/SectionHeading";
 import { linkTargetProps } from "@/components/link";
@@ -9,6 +12,8 @@ import { linkTargetProps } from "@/components/link";
  * 단계를 늘리거나 줄이려면 content.ts 의 joinContent.steps 배열만 고치세요.
  */
 export function JoinSection() {
+  const t = useText();
+
   return (
     <div className="relative w-full overflow-hidden py-16 md:py-20">
       {/* 배경 곡선 장식 */}
@@ -21,9 +26,9 @@ export function JoinSection() {
         <div data-reveal>
           <SectionHeading
             eyebrow={joinContent.eyebrow}
-            lines={[joinContent.headline]}
-            strong={joinContent.headlineStrong}
-            tail={joinContent.headlineTail}
+            lines={[t(joinContent.headline)]}
+            strong={t(joinContent.headlineStrong)}
+            tail={t(joinContent.headlineTail)}
           />
         </div>
 
@@ -49,9 +54,9 @@ export function JoinSection() {
                       {step.eng}
                     </p>
                     <p className="keep-all mt-1 text-[14px] leading-[1.3] font-semibold text-ink md:text-[15px] xl:text-[19px]">
-                      {step.ko.map((line) => (
-                        <span key={line} className="block">
-                          {line}
+                      {step.caption.map((line, i) => (
+                        <span key={i} className="block">
+                          {t(line)}
                         </span>
                       ))}
                     </p>
@@ -69,14 +74,14 @@ export function JoinSection() {
             {...linkTargetProps(joinContent.primaryCta.href)}
             className="shadow-card rounded-pill flex h-[50px] w-[136px] items-center justify-center bg-gradient-to-r from-brand-400 to-brand-700 text-[15px] font-semibold text-white transition hover:brightness-105 md:h-[66px] md:w-[200px] md:text-[20px]"
           >
-            {joinContent.primaryCta.label}
+            {t(joinContent.primaryCta.label)}
           </a>
           <a
             href={joinContent.secondaryCta.href}
             {...linkTargetProps(joinContent.secondaryCta.href)}
             className="shadow-card rounded-pill flex h-[50px] w-[136px] items-center justify-center border border-surface-mute bg-white text-[15px] font-semibold text-ink transition hover:bg-surface-alt md:h-[66px] md:w-[200px] md:text-[20px]"
           >
-            {joinContent.secondaryCta.label}
+            {t(joinContent.secondaryCta.label)}
           </a>
         </div>
       </div>

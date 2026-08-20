@@ -51,6 +51,11 @@ next-env.d.ts
 /solion.png
 /lunion.png
 /sample.png
+/space.png
+/main_eng.png
+/main_high_eng.png
+/solion_eng.png
+/lunion_eng.png
 
 # 정적 빌드 결과물 (GitHub Actions 가 자동으로 만듭니다)
 /out/

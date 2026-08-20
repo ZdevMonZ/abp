@@ -1,9 +1,14 @@
+"use client";
+
 /**
  * 이미지 자리표시자
  * ---------------------------------------------------------------------------
  * 원본 사이트의 사진·로고는 타사 저작물이라 가져오지 않았습니다.
  * 실제 이미지를 넣을 때는 이 컴포넌트를 next/image 의 <Image /> 로 바꾸세요.
  */
+
+import { uiText } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 
 export type Tone = "brand" | "cool" | "warm" | "dark" | "neutral";
 
@@ -27,10 +32,12 @@ export function Placeholder({
   /** 예: "16 / 6" — 넘기지 않으면 부모 높이를 채웁니다 */
   ratio?: string;
 }) {
+  const t = useText();
+
   return (
     <div
       role="img"
-      aria-label={`${label} (자리표시자)`}
+      aria-label={`${label} (${t(uiText.placeholder)})`}
       style={ratio ? { aspectRatio: ratio } : undefined}
       className={`relative flex items-center justify-center overflow-hidden ${TONE_CLASS[tone]} ${className}`}
     >
@@ -79,10 +86,12 @@ export function IconPlaceholder({
   size?: number;
   className?: string;
 }) {
+  const t = useText();
+
   return (
     <div
       role="img"
-      aria-label={`${label} 아이콘 (자리표시자)`}
+      aria-label={`${label} ${t(uiText.placeholder)}`}
       style={{ width: size, height: size }}
       className={`flex shrink-0 items-center justify-center rounded-[22%] bg-accent-soft text-brand-600 ring-1 ring-brand-200 ${className}`}
     >

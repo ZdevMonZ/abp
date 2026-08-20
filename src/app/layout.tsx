@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Noto_Sans_KR, Poppins } from "next/font/google";
 import { brand } from "@/brand/brand";
+import { pick } from "@/brand/i18n";
 import "./globals.css";
 
 /**
@@ -25,13 +26,24 @@ const fontLatin = Poppins({
   display: "swap",
 });
 
+/**
+ * 검색결과·카톡 미리보기에 쓰이는 제목/설명
+ * ---------------------------------------------------------------------------
+ * 이 값은 **사이트를 만들 때 한 번** 정해져 파일에 박히므로 언어를 따라가지 못합니다.
+ * 그래서 기본 언어(한국어)로 고정합니다.
+ *
+ * 브라우저 탭 제목(title)은 언어를 따라가야 해서 여기 두지 않고
+ * src/components/LocaleTitle.tsx 가 그립니다. (한 곳에서만 그려야 안 부딪힙니다)
+ */
+const metaTitle = pick(brand.title, "ko");
+const metaDescription = pick(brand.description, "ko");
+
 export const metadata: Metadata = {
-  title: brand.title,
-  description: brand.description,
+  description: metaDescription,
   openGraph: {
     type: "website",
-    title: brand.title,
-    description: brand.description,
+    title: metaTitle,
+    description: metaDescription,
   },
   /**
    * ★ 검색 노출 차단 — "링크를 아는 사람만" 보게 하는 설정입니다.
@@ -44,6 +56,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  /**
+   * lang="ko" 는 **처음 열릴 때**의 값입니다.
+   * 언어를 English 로 바꾸면 화면이 뜬 뒤 lang="en" 으로 바뀝니다
+   * (src/brand/locale-store.ts 의 useLocaleSetup).
+   */
   return (
     <html lang="ko" className={`${fontKr.variable} ${fontLatin.variable} h-full antialiased`}>
       <body className="h-full">{children}</body>

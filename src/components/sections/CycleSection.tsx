@@ -1,4 +1,7 @@
+"use client";
+
 import { cycleContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 import { SectionHeading } from "@/components/SectionHeading";
 
@@ -12,6 +15,7 @@ import { SectionHeading } from "@/components/SectionHeading";
  * 문구는 src/brand/content.ts 의 cycleContent 에서 옵니다.
  */
 export function CycleSection() {
+  const t = useText();
   const [day, night] = cycleContent.cards;
 
   return (
@@ -30,7 +34,7 @@ export function CycleSection() {
             lines={[cycleContent.headline]}
           />
           <p className="keep-all mx-auto mt-4 max-w-[560px] text-center text-[14px] leading-[1.6] text-ink-soft md:text-[16px]">
-            {cycleContent.lead}
+            {t(cycleContent.lead)}
           </p>
         </div>
 
@@ -91,6 +95,8 @@ export function CycleSection() {
 }
 
 function CycleCard({ card }: { card: (typeof cycleContent.cards)[number] }) {
+  const t = useText();
+
   return (
     <div className="rounded-card border border-line bg-white/85 p-6 md:min-h-[190px] md:p-8">
       <p className="font-display flex items-center gap-2 text-[10px] tracking-[0.18em] text-brand-600 md:text-[11px]">
@@ -100,7 +106,7 @@ function CycleCard({ card }: { card: (typeof cycleContent.cards)[number] }) {
       <p className="font-display mt-2 text-[24px] font-semibold tracking-[0.06em] text-ink md:mt-3 md:text-[28px]">
         {card.title}
       </p>
-      <p className="keep-all mt-3 text-[13px] leading-[1.6] text-ink-soft md:mt-4">{card.body}</p>
+      <p className="keep-all mt-3 text-[13px] leading-[1.6] text-ink-soft md:mt-4">{t(card.body)}</p>
     </div>
   );
 }

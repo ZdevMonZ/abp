@@ -1,3 +1,6 @@
+"use client";
+
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 import { SectionBanner } from "@/components/SectionBanner";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -13,6 +16,8 @@ import type { ServiceSectionData } from "@/brand/content";
  * 지금 이 컴포넌트를 쓰는 곳은 SCIENCE 섹션 하나입니다.
  */
 export function ServiceSection({ service }: { service: ServiceSectionData }) {
+  const t = useText();
+
   return (
     <div className="relative w-full py-16 md:py-20">
       <div className="mx-auto w-full max-w-shell px-5 md:px-10">
@@ -20,8 +25,8 @@ export function ServiceSection({ service }: { service: ServiceSectionData }) {
           <SectionHeading
             eyebrow={service.eyebrow}
             icon={service.icon}
-            lines={[service.headline]}
-            strong={service.headlineStrong}
+            lines={[t(service.headline)]}
+            strong={t(service.headlineStrong)}
           />
         </div>
 
@@ -29,7 +34,7 @@ export function ServiceSection({ service }: { service: ServiceSectionData }) {
         <div className="rounded-card shadow-card relative mt-6 overflow-hidden md:mt-10" data-reveal>
           <SectionBanner
             src={service.visualSrc}
-            label={service.visualLabel}
+            label={t(service.visualLabel)}
             tone={service.visualTone}
             focus={service.visualFocus}
           />
@@ -40,9 +45,9 @@ export function ServiceSection({ service }: { service: ServiceSectionData }) {
           className="mt-7 grid grid-cols-1 gap-2.5 md:mt-12 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line"
           data-reveal
         >
-          {service.features.map((feature) => (
+          {service.features.map((feature, i) => (
             <li
-              key={feature.strong}
+              key={i}
               className="flex items-center gap-5 md:flex-col md:gap-0 md:px-6 md:text-center"
             >
               <Icon
@@ -51,8 +56,8 @@ export function ServiceSection({ service }: { service: ServiceSectionData }) {
                 className="h-12 w-12 text-brand-500 md:h-[72px] md:w-[72px]"
               />
               <p className="keep-all text-[15px] leading-[1.5] font-light md:mt-4 md:text-[20px]">
-                {feature.lead}
-                <span className="block font-semibold">{feature.strong}</span>
+                {t(feature.lead)}
+                <span className="block font-semibold">{t(feature.strong)}</span>
               </p>
             </li>
           ))}

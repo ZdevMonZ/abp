@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { brand } from "@/brand/brand";
-import { setLocale, useLocale } from "@/brand/locale-store";
+import { uiText } from "@/brand/content";
+import { setLocale, useLocale, useText } from "@/brand/locale-store";
 
 /**
  * 언어 선택 드롭다운
@@ -14,7 +15,8 @@ import { setLocale, useLocale } from "@/brand/locale-store";
  * 선택한 언어는 src/brand/locale-store.ts 에 한 곳에 담겨 있어
  * 상단과 푸터가 항상 같은 값을 보여 줍니다.
  *
- * ⚠️ 지금은 "표시"만 바뀝니다. 실제 번역(i18n)은 아직 붙어 있지 않습니다.
+ * 여기서 언어를 고르면 **화면의 모든 글자가 그 언어로 바뀝니다.**
+ * (글자는 src/brand/content.ts · brand.ts 에 한국어·영어가 나란히 있습니다)
  */
 export function LocaleSwitcher({
   variant = "footer",
@@ -26,6 +28,7 @@ export function LocaleSwitcher({
 }) {
   const [open, setOpen] = useState(false);
   const currentLocale = useLocale();
+  const t = useText();
   const boxRef = useRef<HTMLDivElement>(null);
 
   // 바깥을 클릭하거나 Esc 를 누르면 닫기
@@ -72,7 +75,7 @@ export function LocaleSwitcher({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label="언어 선택"
+        aria-label={t(uiText.selectLanguage)}
         className={
           isBar
             ? `flex items-center gap-1 py-2 text-[13px] tracking-[0.12em] transition md:text-[14px] ${
@@ -121,7 +124,7 @@ export function LocaleSwitcher({
       {open ? (
         <ul
           role="listbox"
-          aria-label="언어 목록"
+          aria-label={t(uiText.languageList)}
           className={
             isBar
               ? "shadow-float absolute top-full right-0 z-30 w-[132px] overflow-hidden rounded-[10px] border border-line bg-white py-1"

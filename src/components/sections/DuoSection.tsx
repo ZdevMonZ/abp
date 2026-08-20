@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { duoContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 import { linkTargetProps } from "@/components/link";
 
@@ -18,6 +21,8 @@ import { linkTargetProps } from "@/components/link";
  * 문구·사진·링크는 전부 src/brand/content.ts 의 duoContent 에서 옵니다.
  */
 export function DuoSection() {
+  const t = useText();
+
   return (
     <div className="grid w-full grid-cols-1 md:min-h-dvh md:grid-cols-2">
       {duoContent.panels.map((panel) => {
@@ -64,18 +69,18 @@ export function DuoSection() {
                   night ? "text-white/60" : "text-ink-mute"
                 }`}
               >
-                {panel.sub}
+                {t(panel.sub)}
               </p>
 
               <p className="keep-all mt-4 text-[17px] leading-[1.4] font-light md:mt-5 md:text-[21px]">
-                {panel.headline}
+                {t(panel.headline)}
               </p>
               <p
                 className={`keep-all mt-3 text-[14px] leading-[1.6] md:text-[15px] ${
                   night ? "text-white/70" : "text-ink-soft"
                 }`}
               >
-                {panel.lead}
+                {t(panel.lead)}
               </p>
 
               {/* 제품 사진 — 자르지 않고 카드 안에 담습니다 */}
@@ -85,8 +90,8 @@ export function DuoSection() {
                 }`}
               >
                 <Image
-                  src={panel.visualSrc}
-                  alt={panel.visualAlt}
+                  src={t(panel.visualSrc)}
+                  alt={t(panel.visualAlt)}
                   fill
                   sizes="(min-width: 1440px) 620px, (min-width: 768px) 46vw, 92vw"
                   className="object-cover"
@@ -95,16 +100,16 @@ export function DuoSection() {
 
               {/* 특징 3개 */}
               <ul className="mt-5 flex flex-col gap-2.5 md:mt-6 md:gap-3">
-                {panel.features.map((feature) => (
-                  <li key={feature.strong} className="flex items-center gap-3.5">
+                {panel.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3.5">
                     <Icon
                       name={feature.icon}
                       strokeWidth={1.1}
                       className={`h-7 w-7 md:h-8 md:w-8 ${night ? "text-brand-300" : "text-brand-500"}`}
                     />
                     <p className="keep-all text-[13px] leading-[1.4] font-light md:text-[15px]">
-                      {feature.lead}
-                      <span className="block font-semibold">{feature.strong}</span>
+                      {t(feature.lead)}
+                      <span className="block font-semibold">{t(feature.strong)}</span>
                     </p>
                   </li>
                 ))}
@@ -117,13 +122,13 @@ export function DuoSection() {
                     night ? "text-brand-200" : "text-brand-600"
                   }`}
                 >
-                  {panel.note}
+                  {t(panel.note)}
                 </p>
               ) : null}
 
               <ul className={`flex flex-wrap gap-x-6 gap-y-2 ${"note" in panel ? "mt-3" : "mt-5 md:mt-6"}`}>
-                {panel.links.map((link) => (
-                  <li key={link.label}>
+                {panel.links.map((link, i) => (
+                  <li key={i}>
                     <a
                       href={link.href}
                       {...linkTargetProps(link.href)}
@@ -133,7 +138,7 @@ export function DuoSection() {
                           : "border-ink/30 text-ink hover:border-ink"
                       }`}
                     >
-                      {link.label}
+                      {t(link.label)}
                       <Icon
                         name="arrow-right"
                         strokeWidth={1.6}

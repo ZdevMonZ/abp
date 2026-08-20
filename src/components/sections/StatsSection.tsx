@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { statsContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 
 /**
@@ -56,6 +57,8 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export function StatsSection() {
+  const t = useText();
+
   return (
     <div className="relative w-full overflow-hidden py-16 md:py-20">
       {/* 하단 도시 실루엣 장식 (원본 배경 이미지 자리) */}
@@ -66,10 +69,10 @@ export function StatsSection() {
 
       <div className="relative mx-auto w-full max-w-shell px-5 md:px-10">
         <p className="keep-all text-center text-[20px] leading-[1.4] font-light md:text-[34px]">
-          {statsContent.headline}
+          {t(statsContent.headline)}
           <span className="block">
-            <span className="font-semibold">{statsContent.headlineStrong}</span>
-            {statsContent.headlineTail}
+            <span className="font-semibold">{t(statsContent.headlineStrong)}</span>
+            {t(statsContent.headlineTail)}
           </span>
         </p>
 
@@ -89,15 +92,15 @@ export function StatsSection() {
                 </span>
               </div>
               <div className="mt-4 md:mt-7">
-                <p className="text-[16px] font-light md:text-[24px]">{item.label}</p>
-                <Counter value={item.value} suffix={item.suffix} />
+                <p className="text-[16px] font-light md:text-[24px]">{t(item.label)}</p>
+                <Counter value={item.value} suffix={t(item.suffix)} />
               </div>
             </li>
           ))}
         </ul>
 
         <p className="mt-5 text-right text-[13px] font-light text-ink-faint md:text-[16px]">
-          {statsContent.notice}
+          {t(statsContent.notice)}
         </p>
       </div>
 

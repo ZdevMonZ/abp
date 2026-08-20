@@ -1,4 +1,7 @@
+"use client";
+
 import { aboutContent } from "@/brand/content";
+import { useText } from "@/brand/locale-store";
 import { Icon } from "@/components/Icon";
 import { SectionHeading } from "@/components/SectionHeading";
 
@@ -7,13 +10,15 @@ import { SectionHeading } from "@/components/SectionHeading";
  * 카드를 늘리거나 줄이려면 src/brand/content.ts 의 aboutContent.cards 배열만 고치세요.
  */
 export function AboutSection() {
+  const t = useText();
+
   return (
     <div className="relative w-full py-16 md:py-20">
       <div className="mx-auto w-full max-w-shell px-5 md:px-10">
         <div data-reveal>
           <SectionHeading
             eyebrow={aboutContent.eyebrow}
-            lines={aboutContent.headline}
+            lines={aboutContent.headline.map((line) => t(line))}
             strong={aboutContent.headlineStrong}
           />
         </div>
@@ -31,17 +36,17 @@ export function AboutSection() {
             >
               <div className="order-2 flex-1 md:order-1">
                 <p className="keep-all text-[16px] font-semibold text-ink md:text-[20px]">
-                  {card.title}
+                  {t(card.title)}
                 </p>
                 <p className="keep-all mt-1.5 text-[14px] leading-[1.3] text-ink-soft md:text-[18px]">
-                  {card.body.map((line) => (
-                    <span key={line} className="block">
-                      {line}
+                  {card.body.map((line, i) => (
+                    <span key={i} className="block">
+                      {t(line)}
                     </span>
                   ))}
                 </p>
                 {"note" in card && card.note ? (
-                  <p className="mt-1.5 text-[12px] text-brand-500">{card.note}</p>
+                  <p className="mt-1.5 text-[12px] text-brand-500">{t(card.note)}</p>
                 ) : null}
               </div>
               <div className="order-1 shrink-0 md:order-2 md:self-center">

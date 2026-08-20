@@ -2,8 +2,9 @@
 
 `https://mall.beautydaum.com/main/index.php` 의 **레이아웃·섹션 구성·스크롤 방식**을 Next.js로 다시 만든 토대입니다.
 **문구는 `기획서.md` (SOLION & LUNION Two-Track 사업 기획서, 2026.07) 기준으로 채워져 있습니다.**
-**메인 비주얼은 시안 이미지(`public/main_high.webp`)를 씁니다. 아이콘은 `sample.png` 시안의 선(line) 아이콘으로 그려 넣었고,
-남은 이미지·로고는 아직 자리표시자(placeholder)** 입니다.
+**한국어·영어 두 언어를 지원합니다** (상단 `KOR ⌄` / 푸터 드롭다운 · 글자와 사진이 함께 바뀝니다).
+**메인 비주얼·제품 배너는 시안 이미지를 씁니다. 아이콘은 `sample.png` 시안의 선(line) 아이콘으로 그려 넣었고,
+로고만 아직 자리표시자(placeholder)** 입니다.
 원본 사이트의 이미지·로고·상호는 타사 저작물이라 가져오지 않았습니다.
 
 > **저장소에 올리지 않는 파일** — 이 저장소는 공개(public)라서 아래는 `.gitignore` 로 빼 두었습니다.
@@ -107,7 +108,7 @@ npm run deploy
 |---|---|
 | **색상 · 모서리 · 그림자** | `src/app/globals.css` 맨 위 `@theme` 블록 |
 | **브랜드명 · 연락처 · 푸터 링크** | `src/brand/brand.ts` |
-| **화면에 보이는 모든 문구** | `src/brand/content.ts` |
+| **화면에 보이는 모든 문구 (한국어 · 영어)** | `src/brand/content.ts` |
 
 ### 예시 1 — 메인 컬러 교체
 
@@ -125,6 +126,83 @@ npm run deploy
 
 ---
 
+## 언어 전환 (한국어 · English)
+
+상단 메뉴의 **KOR ⌄** 또는 푸터의 드롭다운에서 언어를 고르면
+**화면의 모든 글자**가 그 언어로 바뀝니다. 페이지가 새로 열리지 않고 글자만 갈립니다.
+
+- 두 드롭다운은 항상 같은 값을 보여 줍니다
+- 고른 언어는 브라우저에 기억되어 **다음 방문·새로고침에도 유지**됩니다
+- `<html lang>` 과 브라우저 탭 제목도 함께 바뀝니다
+
+### 문구 고치는 법
+
+`src/brand/content.ts` · `src/brand/brand.ts` 에 한국어와 영어가 **나란히** 적혀 있습니다.
+
+```ts
+title: t("우주 방사선 저항균", "Radiation-resistant microbes")
+       └ 한국어 ─────────────┘  └ 영어 ─────────────────────┘
+```
+
+한국어와 영어가 **같은 글자**(SOLION · ABOUT US · DAY 0~3 · 90%+ …)는 `t()` 없이 그냥 적습니다.
+
+| 하고 싶은 일 | 고칠 곳 |
+|---|---|
+| 영어 문구만 다듬기 | 해당 `t(...)` 의 **두 번째** 값 |
+| 한국어 문구만 다듬기 | 해당 `t(...)` 의 **첫 번째** 값 |
+| 메뉴·버튼·읽어주기 설명 | `content.ts` 맨 아래 `uiText` |
+| 기본 언어 바꾸기 | `brand.ts` 의 `locales` 배열 **첫 번째** 항목 |
+| 언어 추가 (예: 일본어) | `src/brand/i18n.ts` 의 안내 주석 4단계 |
+
+### 사진도 언어에 따라 바뀝니다
+
+시안 이미지 안에는 글자가 그려져 있어서(코드로 고칠 수 없는 글자) **언어별로 다른 파일**을 씁니다.
+
+| 자리 | 한국어 | English | 크기 |
+|---|---|---|---|
+| 첫 화면 배경 | `main_high.webp` | `main_high_eng.webp` | 1717×916 |
+| SOLION 배너 | `solion.webp` | `solion_eng.webp` | 1535×1024 |
+| LUNION 배너 | `lunion.webp` | `lunion_eng.webp` | 1535×1024 |
+| SCIENCE 배너 | `space.webp` (공통) | `space.webp` (공통) | 1254×1254 |
+
+SCIENCE 배너는 **그림 안에 글자가 없어서** 두 언어가 같은 파일을 씁니다.
+
+적는 방법은 글자와 똑같습니다 — 한국어 경로, 영어 경로를 나란히:
+
+```ts
+// src/brand/content.ts — SOLION·LUNION 배너
+visualSrc: t("/solion.webp", "/solion_eng.webp"),
+```
+
+```ts
+// src/components/sections/HeroSection.tsx — 첫 화면 배경
+const IMAGE = {
+  src: { ko: "/main_high.webp", en: "/main_high_eng.webp" },
+  width: 1717,
+  height: 916,
+};
+```
+
+> 첫 화면만 `{ ko: …, en: … }` 로 풀어 적혀 있습니다. `t("…","…")` 와 같은 뜻인데,
+> 그 파일에서는 `t` 라는 이름을 화면에 글자를 그릴 때 이미 쓰고 있어서 그렇습니다.
+
+**언어별 사진을 새로 넣을 때**
+1. PNG 를 `public/` 에 WebP 로 변환해 넣기
+   `node -e "require('sharp')('사진.png').webp({quality:90}).toFile('public/사진.webp')"`
+2. 위처럼 `visualSrc` 에 두 경로를 나란히 적기
+3. **두 파일의 가로·세로가 같아야 합니다.** 첫 화면은 사진 비율로 화면 높이를 계산하고,
+   배너는 정해진 비율로 잘라 쓰기 때문에 크기가 다르면 잘리는 위치가 어긋납니다.
+
+> SCIENCE 처럼 `ServiceSection` 을 쓰는 섹션은 지금 `visualSrc` 가 경로 하나만 받습니다.
+> 그 배너도 언어별로 나누고 싶어지면 요청하세요 (세 줄 작업입니다).
+
+### 검색 노출용 제목/설명은 한국어 고정
+
+검색결과·카톡 미리보기에 쓰이는 글은 **사이트를 만들 때 한 번** 파일에 박히므로
+언어를 따라가지 못합니다. 기본 언어(한국어)로 고정해 두었습니다 (`src/app/layout.tsx`).
+
+---
+
 ## 폴더 구조
 
 ```
@@ -134,8 +212,9 @@ src/
 │  ├─ layout.tsx      폰트·메타태그
 │  └─ page.tsx      ★ 페이지 조립부 (섹션 순서가 이 배열 그대로)
 ├─ brand/
-│  ├─ brand.ts        ★ 브랜드명·연락처·구매 링크·푸터
-│  ├─ content.ts      ★ 상단 메뉴 + 섹션별 문구
+│  ├─ brand.ts        ★ 브랜드명·연락처·구매 링크·푸터 (한국어·영어)
+│  ├─ content.ts      ★ 상단 메뉴 + 섹션별 문구 (한국어·영어)
+│  ├─ i18n.ts           언어 전환 기본 도구 — t("한국어","English")
 │  └─ locale-store.ts   선택된 언어를 담아 두는 작은 저장소 (상단·푸터 동기)
 ├─ image-loader.ts     사진 주소 앞에 /abp 붙이기 (GitHub Pages 용 · 건드릴 일 없음)
 └─ components/
@@ -147,7 +226,8 @@ src/
    ├─ Placeholder.tsx    이미지·로고 자리표시자 (아이콘 자리표시자는 이제 안 씀)
    ├─ ScrollCue.tsx      "Scroll" 마우스 인디케이터
    ├─ SiteFooter.tsx     푸터 (섹션이 아닌 꼬리 영역 · 점 네비게이션에 안 잡힘)
-   ├─ LocaleSwitcher.tsx 언어 드롭다운 — 상단(KOR)·푸터 두 곳에서 씀 (표시만 · 번역 미연결)
+   ├─ LocaleSwitcher.tsx 언어 드롭다운 — 상단(KOR)·푸터 두 곳에서 씀
+   ├─ LocaleTitle.tsx    브라우저 탭 제목 (고른 언어를 따라감)
    └─ sections/          섹션 컴포넌트
       ├─ DuoSection.tsx    ★ SOLION ↔ LUNION 좌우 대비
       └─ CycleSection.tsx    24H SKIN CYCLE 원형 다이어그램
@@ -167,11 +247,11 @@ scripts/
 
 | # | id | 원본 | 이 프로젝트 |
 |---|---|---|---|
-| 1 | `hero` | 풀스크린 메인 비주얼 | `HeroSection` — 배경 `public/main_high.webp` |
+| 1 | `hero` | 풀스크린 메인 비주얼 | `HeroSection` — 배경 `main_high.webp` / 영어 `main_high_eng.webp` |
 | 2 | `about` | ABOUT US · 강점 카드 4개 | `AboutSection` |
-| 3 | `duo` | MALL / HUB (반복 섹션) | `DuoSection` — **SOLION(낮·밝은 쪽) ↔ LUNION(밤·어두운 쪽) 좌우 대비 1개 섹션**. 사진 `public/solion.webp`·`public/lunion.webp` |
+| 3 | `duo` | MALL / HUB (반복 섹션) | `DuoSection` — **SOLION(낮·밝은 쪽) ↔ LUNION(밤·어두운 쪽) 좌우 대비 1개 섹션**. 사진 `solion.webp`·`lunion.webp` (영어 `solion_eng.webp`·`lunion_eng.webp`) |
 | 4 | `cycle` | — | `CycleSection` — 24H SKIN CYCLE 원형 다이어그램 (새로 추가) |
-| 5 | `science` | FACULTY | `ServiceSection` — 배너는 아직 자리표시자 |
+| 5 | `science` | FACULTY | `ServiceSection` — 배너 사진 `public/space.webp` |
 | 6 | `stats` | 숫자 카운터 4개 | `StatsSection` |
 | 7 | `join` | JOIN US · 5단계 | `JoinSection` (→ CARE RITUAL) |
 | — | (섹션 아님) | 푸터 | `SiteFooter` — 마지막 섹션 뒤에 붙는 꼬리 영역 |
@@ -200,13 +280,13 @@ scripts/
 |---|---|
 | 사람 | **준비 중** — 로그인 기능이 없어 표시만 (지우려면 TopNav.tsx 의 해당 `<span>` 삭제) |
 | 장바구니 | `brand.purchase.href` 로 이동 (네이버 스마트스토어 예정) |
-| KOR ⌄ | 언어 선택 — 푸터 드롭다운과 값이 항상 같이 움직입니다 |
+| KOR ⌄ | 언어 선택 (KOR / ENG) — 고르면 **화면의 모든 글자**가 그 언어로 바뀝니다. 푸터 드롭다운과 값이 항상 같이 움직입니다 |
 
 좁은 화면(1024px 미만)에서는 메뉴가 햄버거(≡) 버튼으로 접힙니다.
 
 ---
 
-## 메인 비주얼 (`public/main_high.webp` · 1717×916)
+## 메인 비주얼 (`public/main_high.webp` · 영어 `main_high_eng.webp` · 둘 다 1717×916)
 
 시안 이미지에는 메뉴줄·SOLION/LUNION 문구·DAY/NIGHT·SCROLL 이 **이미 그려져 있습니다.**
 `HeroSection.tsx` 위쪽 상수 몇 개로 처리합니다.
@@ -232,10 +312,23 @@ scripts/
 | 1920 폭 | 1.37배 | **1.11배** |
 | 2560 폭 | 1.82배 | **1.49배** |
 
-**단, 이 배치는 화면이 5:3(1.67)보다 가로로 넓을 때만** 씁니다.
-휴대폰·태블릿·16:10 노트북처럼 정사각형에 가까운 화면에서는 아래 여백이 화면의 3할 넘게 비어
-허전해지므로 예전처럼 꽉 채웁니다(그런 화면은 사진이 오히려 축소되거나 조금만 늘어나서 흐려지지도 않습니다).
-기준선은 `src/app/globals.css` 의 `.hero-band` / `.hero-fill` 에 있고, `5/3` 숫자 하나로 조절합니다.
+**단, 이 배치는 화면이 4:3(1.33)보다 가로로 넓을 때만** 씁니다 — 가로로 놓인 화면은 전부 해당됩니다.
+휴대폰·태블릿 **세로**처럼 세로로 긴 화면에서만 화면을 꽉 채웁니다(띠로 두면 사진이 화면 높이의
+2~3할밖에 안 되는 얇은 줄이 되기 때문입니다).
+
+**왜 4:3 인가 — 좌우가 잘리면 안 되기 때문입니다.**
+시안 양쪽 끝에 SOLION(왼쪽) · LUNION(오른쪽) 글자가 있습니다. 화면을 꽉 채우려고 사진을 키우면
+그 글자들이 먼저 잘려 나갑니다.
+
+| 화면 | 비율 | 꽉 채우면 잘리는 좌우 |
+|---|---|---|
+| 1920×1080 (16:9) | 1.78 | 20% |
+| 1440×900 (16:10) | 1.60 | 26% |
+| 맥북 1512×982 | 1.54 | 29% |
+| 아이패드 가로 | 1.44 | 34% |
+
+기준선은 `src/app/globals.css` 의 `.hero-band` / `.hero-fill` 에 있고, `4/3` 숫자 하나로 조절합니다.
+숫자를 키우면 꽉 채우는(=잘리는) 화면이 늘고, 줄이면 사진 아래 여백이 커집니다.
 
 > **더 선명하게 하려면** 더 큰 원본이 필요합니다. 최소 2560×1366, 되도록 3840×2048 로 다시 뽑으세요.
 > 이 사진은 가로보다 **세로 픽셀이 부족**하므로(1.87:1 의 아주 옆으로 긴 비율) 세로가 함께 커져야 합니다.
@@ -252,7 +345,7 @@ scripts/
 > **왜 아래는 자르지 않나** — 이 사진은 가로로 길어서(1717×916) 위아래를 자를수록 좌우도
 > 크게 잘려 나갑니다. 아래까지 자르면 양옆 SOLION / LUNION 글자가 잘려서, 대신 그늘로 처리했습니다.
 
-> 사진을 바꾸려면 `public/` 에 넣고 `<Image src="/main_high.webp">` 파일명을 교체하세요.
+> 사진을 바꾸려면 `public/` 에 넣고 `HeroSection.tsx` 의 `IMAGE.src` 를 교체하세요 (언어별 두 줄).
 > **비율이 다른 사진으로 바꾸면 `CROP_TOP` 을 다시 맞춰야 합니다.**
 > 글자가 없는 사진이라면 `CROP_TOP` 을 `0%` 로 두고 `SHOW_TEXT_OVER_IMAGE` 를 `true` 로 켜는 편이 좋습니다.
 
@@ -277,7 +370,7 @@ scripts/
 `src/brand/content.ts` 의 `duoContent.panels` 에서 한 줄만 고치면 됩니다.
 
 ```ts
-visualSrc: "/solion.webp",              // public/ 아래 파일 경로
+visualSrc: t("/solion.webp", "/solion_eng.webp"),  // 한국어 · 영어 경로
 visualAlt: "SOLION ... 라인업",        // 사진 설명 (화면에는 안 보이고 읽어 주는 글)
 ```
 
@@ -293,17 +386,21 @@ visualAlt: "SOLION ... 라인업",        // 사진 설명 (화면에는 안 보
 `public/` 에 파일을 넣고 `src/brand/content.ts` 의 해당 섹션에 두 줄을 추가합니다.
 
 ```ts
-visualSrc: "/science.webp",  // 사진 경로 (없으면 자리표시자가 나옵니다)
-visualFocus: "62%",         // PC 배너에서 사진의 어느 높이를 보여줄지
+visualSrc: "/space.webp",   // 사진 경로 (없으면 자리표시자가 나옵니다)
+visualFocus: "62%",         // PC 배너에서 사진의 어느 높이를 보여줄지 (안 적으면 가운데 50%)
 ```
 
 | 화면 | 배너 비율 | 보이는 범위 |
 |---|---|---|
 | 768px 이상 | 1400 : 340 (가로로 긴 띠) | `visualFocus` 로 지정한 높이의 띠만 |
-| 768px 미만 | 3 : 2 | 사진 전체 |
+| 768px 미만 | 3 : 2 | 좌우는 전부, 위아래는 조금 잘림 |
 
 `visualFocus` 는 `0%`(사진 맨 위) ~ `100%`(맨 아래).
 사진에 글자가 그려져 있다면 **그 글자가 반쯤 잘리지 않는 값**으로 맞추세요.
+
+지금 SCIENCE 배너는 `public/space.webp` (1254×1254 정사각형)를 씁니다.
+가운데(기본 50%)에 빛의 초승달과 입자가 모여 있어 `visualFocus` 를 따로 주지 않았습니다.
+**글자가 없는 그림이라 한국어·영어 화면이 같은 파일을 씁니다.**
 
 ---
 
@@ -353,7 +450,7 @@ visualFocus: "62%",         // PC 배너에서 사진의 어느 높이를 보여
 | 상단 메뉴 | 없음 (로그인 화면이 입구 역할) | `brand.png` 시안 구성 — 워드마크 / BRAND·SOLION·LUNION·SCIENCE·JOURNAL / 계정·구매·언어 | 로그인 화면을 없앤 대신 어디서든 이동할 수 있는 길 |
 | 팔레트 | 민트·청록 (#1fa0b0) | 라벤더·퍼플 (#6b6bd6) | `brand.png` 시안 톤 |
 | 메인 비주얼 | 배너 슬라이더 | 시안 이미지 1장 (`main_high.webp`) 전체 화면 | 시안이 이미 완성된 한 장 구성 |
-| 푸터 드롭다운 | 관련 사이트 링크 | 언어 선택 (한국어/English) | 표시만 동작 — 실제 번역(i18n)은 미연결 |
+| 푸터 드롭다운 | 관련 사이트 링크 | 언어 선택 (한국어/English) | 고르면 화면의 모든 글자가 바뀝니다 (아래 **언어 전환** 참고) |
 | 픽토그램 | 회색 아이콘 이미지 | 선으로 그린 SVG 아이콘 (`Icon.tsx`) | `sample.png` 시안 결. 이미지 파일이 없어도 되고 색·크기가 자유로움 |
 | 특징 3개 줄 | 좌우 여백만 | PC 에서 얇은 세로줄로 칸 구분 | `sample.png` 의 SCIENCE 줄 구성 |
 | 케어 리추얼 단계 | 원 사이 점선 | 원 사이 화살표(→) | `sample.png` 의 POST-PROCEDURE JOURNEY 줄 구성 |
