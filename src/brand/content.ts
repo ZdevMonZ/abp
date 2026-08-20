@@ -186,7 +186,7 @@ export const duoContent = {
       note: t("재구매는 자사몰에서 15% 할인", "15% off repeat orders on our own store"),
       links: [
         { label: t("제품 구매하기", "Shop the products"), href: brand.purchase.href },
-        { label: t("판매 의원 안내", "Find a clinic"), href: brand.clinic.href },
+        { label: t("판매 의원 안내", "Clinic information"), href: brand.clinic.href },
       ],
     },
   ],
@@ -364,7 +364,7 @@ export const joinContent = {
   ],
   // 구매 링크는 brand.purchase 한 곳에서 관리합니다 (네이버 스마트스토어 예정)
   primaryCta: { label: t("제품 구매", "Shop now"), href: brand.purchase.href },
-  secondaryCta: { label: t("판매 의원 안내", "Find a clinic"), href: brand.clinic.href },
+  secondaryCta: { label: t("판매 의원 안내", "Clinic information"), href: brand.clinic.href },
 };
 
 /** ── 8. 버튼·안내 같은 짧은 화면 문구 ────────────────────────────────
