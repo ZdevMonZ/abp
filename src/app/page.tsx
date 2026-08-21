@@ -3,6 +3,7 @@
 import { serviceSections, uiText } from "@/brand/content";
 import { useText } from "@/brand/locale-store";
 import { FullPage, type SectionDef } from "@/components/FullPage";
+import { IntroVeil } from "@/components/IntroVeil";
 import { LocaleTitle } from "@/components/LocaleTitle";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { CycleSection } from "@/components/sections/CycleSection";
@@ -47,6 +48,8 @@ export default function Home() {
     <>
       {/* 브라우저 탭 제목 — 고른 언어를 따라갑니다 */}
       <LocaleTitle />
+      {/* 열림 연출 — 사이트를 열면 화면 전체가 어둠에서 점점 밝아집니다 */}
+      <IntroVeil />
       <FullPage sections={sections} footer={<SiteFooter />} />
     </>
   );
